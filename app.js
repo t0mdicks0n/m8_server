@@ -34,8 +34,6 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
       socket.to(roomId).emit('user-disconnected', userId)
     })
-
-
   })
 
   socket.on('hello', () => {
@@ -44,4 +42,12 @@ io.on('connection', socket => {
 
 })
 
-server.listen(3002)
+if (module === require.main) {
+  const PORT = process.env.PORT || 8080;
+  server.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
+  });
+}
+
+module.exports = server;
