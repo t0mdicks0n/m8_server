@@ -1,12 +1,17 @@
 const express = require('express')
 const app = express()
 const server = require('http').Server(app)
+var cors = require('cors');
 const io = require("socket.io")(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
   }
 });
+
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 
 /*const { ExpressPeerServer } = require('peer');
 const peerExpress = require('express');
@@ -24,18 +29,19 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+app.get('/create-new-room', (req, res) => {
+  res.send({ roomId: uuidV4() })
+})
+
 io.on('connection', socket => {
   console.log("Connection")
   socket.on('join-room', (roomId, userId) => {
-    console.log("Client joined room")
+    console.log("Client joined room ", roomId, userId)
     socket.join(roomId)
     socket.to(roomId).emit('user-connected', userId)
-
     socket.on('disconnect', () => {
       socket.to(roomId).emit('user-disconnected', userId)
     })
-
-
   })
 
   socket.on('hello', () => {
