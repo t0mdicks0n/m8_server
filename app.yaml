@@ -1,7 +1,7 @@
-# [START appengine_websockets_yaml]
-runtime: nodejs
-
-
-network:
-  session_affinity: true
-# [END appengine_websockets_yaml]
+steps:
+- name: node
+  entrypoint: yarn
+  args: ['install']
+- name: node
+  entrypoint: yarn
+  args: ['start']
