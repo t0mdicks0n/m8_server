@@ -34,7 +34,7 @@ app.get('/create-new-room', (req, res) => {
 })
 
 io.on('connection', socket => {
-  console.log("Connection")
+  console.log("New connection ", Math.floor(Math.random() * 10))
   socket.on('join-room', (roomId, userId) => {
     console.log("Client joined room ", roomId, userId)
     socket.join(roomId)
