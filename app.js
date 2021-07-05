@@ -48,11 +48,11 @@ app.get('/rooms/:room/users', (req, res) => {
 
 io.on('connection', socket => {
   console.log("New connection ", Math.floor(Math.random() * 10))
-  socket.on('join-room', (roomId, userId) => {
-    console.log("Client joined room ", roomId, userId)
+  socket.on('join-room', (roomId, userId, userName) => {
+    console.log("Client joined room ", roomId, userId, userName)
     // TODO: handle error callback({message:'testing error'});
     if (roomId in roomIds) {
-      roomIds[roomId]["users"][userId] = {"userId": userId}
+      roomIds[roomId]["users"][userId] = {"userId": userId, "userName": userName}
       socket.join(roomId)
       socket.to(roomId).emit('user-connected', userId, roomId)
       socket.on('disconnect', () => {
