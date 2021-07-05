@@ -24,24 +24,41 @@ peerServer.listen(peerPort);*/
 
 const { v4: uuidV4 } = require('uuid')
 
+let roomIds = {}
+
 app.get('/', (req, res) => {
   console.log("Hello world")
   res.send('Hello World!')
 })
 
 app.get('/create-new-room', (req, res) => {
-  res.send({ roomId: uuidV4() })
+  let roomId = uuidV4()
+  roomIds[roomId] = {"roomId": roomId, "users": {}}
+  res.send({ roomId: roomId })
+})
+
+app.get('/rooms/:room/users', (req, res) => {
+  if (!(req.params.room in roomIds)) {
+    res.send({ error: "No room with id" + req.params.room})
+  }
+  let roomObj = roomIds[req.params.room]
+  console.log("Found users in room", roomObj["users"])
+  res.send({ users: roomObj["users"]})
 })
 
 io.on('connection', socket => {
   console.log("New connection ", Math.floor(Math.random() * 10))
   socket.on('join-room', (roomId, userId) => {
     console.log("Client joined room ", roomId, userId)
-    socket.join(roomId)
-    socket.to(roomId).emit('user-connected', userId)
-    socket.on('disconnect', () => {
-      socket.to(roomId).emit('user-disconnected', userId)
-    })
+    // TODO: handle error callback({message:'testing error'});
+    if (roomId in roomIds) {
+      roomIds[roomId]["users"][userId] = {"userId": userId}
+      socket.join(roomId)
+      socket.to(roomId).emit('user-connected', userId)
+      socket.on('disconnect', () => {
+        socket.to(roomId).emit('user-disconnected', userId)
+      })
+    }
   })
 
   socket.on('hello', () => {
