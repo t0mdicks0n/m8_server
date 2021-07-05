@@ -54,7 +54,7 @@ io.on('connection', socket => {
     if (roomId in roomIds) {
       roomIds[roomId]["users"][userId] = {"userId": userId}
       socket.join(roomId)
-      socket.to(roomId).emit('user-connected', userId)
+      socket.to(roomId).emit('user-connected', userId, roomId)
       socket.on('disconnect', () => {
         socket.to(roomId).emit('user-disconnected', userId)
       })
